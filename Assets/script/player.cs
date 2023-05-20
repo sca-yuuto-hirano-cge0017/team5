@@ -1,37 +1,27 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
-public class player : MonoBehaviour
+public class Player : MonoBehaviour
 {
-   private float speed=0.005f;
-
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private float _speed = 5.0f;
+    private float distance = 1.0f;
+    private Vector2 move;
+    private Vector3 targetPos;
+    private void Start()
     {
-        
+        targetPos = transform.position;
     }
-
-    // Update is called once per frame
     void Update()
     {
-        Vector2 position= transform.position;
-        if (Input.GetKey("left"))
+        move.x = Input.GetAxisRaw("Horizontal");
+        move.y = Input.GetAxisRaw("Vertical");
+        if (move != Vector2.zero && transform.position == targetPos)
         {
-            position.x-=speed;
+            targetPos += new Vector3(move.x, move.y, 0) * distance;
         }
-        else if(Input.GetKey("right"))
-        {
-            position.x+=speed;
-        }
-        else if (Input.GetKey("up"))
-        {
-            position.y+=speed;
-        }
-        else if(Input.GetKey("down"))
-        {
-            position.y-=speed;
-        }
-        transform.position=position;
+        Move(targetPos);
+    }
+    private void Move(Vector3 targetPosition)
+    {
+        transform.position = Vector3.MoveTowards(transform.position, targetPosition,
+            _speed * Time.deltaTime);
     }
 }
